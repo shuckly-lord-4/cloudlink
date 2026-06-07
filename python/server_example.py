@@ -8,7 +8,6 @@ import aiohttp
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK")
 
 async def send_discord_webhook(message_text):
-    """Sends a message payload to Discord safely."""
     if not DISCORD_WEBHOOK_URL:
         print("Webhook Error: DISCORD_WEBHOOK environment variable is not set!")
         return
@@ -26,11 +25,8 @@ async def send_discord_webhook(message_text):
         print(f"Error handling discord webhook transmission: {e}")
 
 async def on_client_connect(client):
-    """Triggered whenever a client connects to the server."""
     client_id = getattr(client, "snowflake", "Unknown ID")
     notification = f"🔔 **Client Connected!**\nClient Snowflake ID: `{client_id}` has established a connection."
-    
-    # Fire off the webhook
     await send_discord_webhook(notification)
 class example_callbacks:
     def __init__(self, parent):
@@ -90,7 +86,7 @@ if __name__ == "__main__":
     )
 
     # Load protocols
-    cl = cloudlink()
+    cl = cloudlink.Cloudlink()
     clpv4 = clpv4(server)
     scratch = scratch(server)
 
