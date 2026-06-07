@@ -1,33 +1,8 @@
 from cloudlink import server
 from cloudlink.server.protocols import clpv4, scratch
 import asyncio
-import os
-import aiohttp
 
-# Fetches the URL securely from Render's Environment Variables
-DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK")
 
-async def send_discord_webhook(message_text):
-    if not DISCORD_WEBHOOK_URL:
-        print("Webhook Error: DISCORD_WEBHOOK environment variable is not set!")
-        return
-
-    payload = {
-        "content": message_text,
-        "username": "Cloudlink Watchdog"
-    }
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(DISCORD_WEBHOOK_URL, json=payload) as response:
-                if response.status not in [200, 204]:
-                    print(f"Failed to send webhook: Status {response.status}")
-    except Exception as e:
-        print(f"Error handling discord webhook transmission: {e}")
-
-async def on_client_connect(client):
-    client_id = getattr(client, "snowflake", "Unknown ID")
-    notification = f"🔔 **Client Connected!**\nClient Snowflake ID: `{client_id}` has established a connection."
-    await send_discord_webhook(notification)
 class example_callbacks:
     def __init__(self, parent):
         self.parent = parent
@@ -86,7 +61,6 @@ if __name__ == "__main__":
     )
 
     # Load protocols
-    cl = cloudlink.Cloudlink()
     clpv4 = clpv4(server)
     scratch = scratch(server)
 
@@ -94,7 +68,6 @@ if __name__ == "__main__":
     callbacks = example_callbacks(server)
     commands = example_commands(server, clpv4)
     events = example_events()
-    server = cl.server(logs=True)
 
     # Binding callbacks - This example binds the "handshake" command with example callbacks.
     # You can bind as many functions as you want to a callback, but they must use async.
@@ -107,7 +80,6 @@ if __name__ == "__main__":
     # To see all possible events for the server, see cloudlink.events.
     server.bind_event(server.on_connect, events.on_connect)
     server.bind_event(server.on_disconnect, events.on_close)
-    server.bind_event(server.events.on_connect, on_client_connect)
 
     # You can also bind an event to a custom command. We'll bind callbacks.test3 to our 
     # foobar command from earlier.
