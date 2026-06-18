@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # such as pmsg, gvar, pvar, and more.
     @client.on_gmsg
     async def on_gmsg(message):
-        print(f"I got a global message! It says: \"{message['val']}\".")
+        print(f"GlobalMessage: \"{message['val']}\".")
 
     # Example use of on_command functions within the client.
     @client.on_command(cmd="gmsg")
